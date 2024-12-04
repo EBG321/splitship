@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:splitshipv01/container/proceed_page.dart';
 import 'package:splitshipv01/home_page/home_page.dart';
 
 class ContainerPage extends StatelessWidget {
@@ -31,7 +32,7 @@ class ContainerPage extends StatelessWidget {
         title: Text('$containerType Details'),
         backgroundColor: Color.fromARGB(50, 0, 45, 83),
       ),
-      backgroundColor: Color.fromARGB(50, 0, 45, 83),
+      backgroundColor: Color.fromARGB(128, 0, 26, 50),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -184,18 +185,20 @@ class ContainerPage extends StatelessWidget {
               SizedBox(height: 30),
 
               // Action button to proceed with booking or further actions
-              ElevatedButton(
-                onPressed: () {
-                  // Add your action here, e.g., navigate to booking page or show further details
-                  Get.snackbar("Action", "Proceed with your action for $containerType");
-                  Get.to(SplitShipPage());
-                },
-                child: Text('Proceed with $containerType'),
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
-                  backgroundColor: Colors.blue.shade200,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+              Align(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.snackbar("Action", "Proceed with your action for $containerType");
+                    Get.to(ProceedPage(containerType: containerType));
+                  },
+                  child: Text('Proceed'),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    backgroundColor: Colors.blue.shade300,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                 ),
               ),

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:splitshipv01/account%20setup/account_setup_screen.dart';
+import '../account setup/account_setup_screen.dart';
 import '../password recovery/password_recovery_screen.dart';
 import 'auth_controller.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends StatelessWidget {
-  final AuthController authController = Get.put(AuthController()); // Ensure controller is initialized
-  final _formKey = GlobalKey<FormState>(); // Key to validate the form
+  final AuthController authController = Get.put(AuthController()); // Initialize controller
+  final _formKey = GlobalKey<FormState>(); // Key for form validation
 
   @override
   Widget build(BuildContext context) {
@@ -17,27 +17,20 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color.fromARGB(50, 0, 45, 83),
       body: Center(
-        child: SingleChildScrollView( // Ensures scrolling in case screen height is small
+        child: SingleChildScrollView( // Allow scrolling for smaller screens
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 500), // Limits the width of the form for larger screens
+            constraints: BoxConstraints(maxWidth: 500), // Limit form width
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Form(
-                key: _formKey, // Use the form key for validation
+                key: _formKey, // Attach form key
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center, // Center the contents
                   children: [
                     Text(
                       'Let\'s you in',
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 20),
-                    _socialLoginButton('Continue with Facebook'),
-                    _socialLoginButton('Continue with Google'),
-                    _socialLoginButton('Continue with Apple'),
-                    SizedBox(height: 40),
-                    Text('or'),
                     SizedBox(height: 10),
                     // Email field with validation
                     TextFormField(
@@ -76,7 +69,7 @@ class LoginScreen extends StatelessWidget {
                         Row(
                           children: [
                             Checkbox(
-                              value: authController.isChecked.value, // Use reactive variable
+                              value: authController.isChecked.value, // Reactive variable
                               onChanged: (value) {
                                 authController.isChecked.value = value!;
                               },
@@ -84,9 +77,12 @@ class LoginScreen extends StatelessWidget {
                             Text('Remember me'),
                           ],
                         ),
-                        TextButton(onPressed: () {
-                          Get.to(PasswordRecoveryScreen());
-                        }, child: Text('Forgot password?')),
+                        TextButton(
+                          onPressed: () {
+                            Get.to(PasswordRecoveryScreen());
+                          },
+                          child: Text('Forgot password?'),
+                        ),
                       ],
                     )),
                     SizedBox(height: 20),
@@ -94,14 +90,11 @@ class LoginScreen extends StatelessWidget {
                         ? CircularProgressIndicator()
                         : ElevatedButton(
                       onPressed: () {
-                        // Validate the form before attempting login
                         if (_formKey.currentState?.validate() ?? false) {
-                          // If valid, attempt login
                           authController.login(
                             emailController.text,
                             passwordController.text,
                           );
-                          Get.to(AccountSetupScreen());
                         }
                       },
                       child: Text('Sign in'),
@@ -121,19 +114,6 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _socialLoginButton(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ElevatedButton(
-        onPressed: () {},
-        child: Text(text),
-        style: ElevatedButton.styleFrom(
-          minimumSize: Size(double.infinity, 50), // Full-width button
         ),
       ),
     );

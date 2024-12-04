@@ -1,9 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 class LocationController extends GetxController {
   var fromLocation = ''.obs;
   var toLocation = ''.obs;
+  var sortBy = 'Price'.obs; // New observable for sorting
+  var selectedContainerType = ''.obs;
+  var maxPrice = 200.0.obs; // Default max price
 
   List<String> locations = [
     "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia",
@@ -28,11 +31,55 @@ class LocationController extends GetxController {
     "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
   ];
 
-  void setFromLocation(String value) {
-    fromLocation.value = value;
+  List<String> containerTypes = [
+    'dry container',
+    'Flat rack container',
+    'Open top container',
+    'Double door container',
+    'ISO Reefer container'
+  ];
+
+  void setFromLocation(String? newValue) {
+    fromLocation.value = newValue ?? 'China';
   }
 
-  void setToLocation(String value) {
-    toLocation.value = value;
+  void setToLocation(String? newValue) {
+    toLocation.value = newValue ?? 'United States';
   }
+
+  void setContainerType(String? type) {
+    if (type != null) {
+      selectedContainerType.value = type;
+    }
+  }
+
+  void setMaxPrice(double price) => maxPrice.value = price;
+
+  /// Fetch filtered containers based on selected filters.
+  Future<List<Map<String, dynamic>>> fetchContainersByCountry(String country) async {
+    try {
+      // Query Firestore to get containers where 'location' matches the given country
+      final snapshot = await FirebaseFirestore.instance
+          .collection('containers') // Collection name is 'containers'
+          .where('location', isEqualTo: country) // Filtering by country (location field)
+          .get();
+
+      // Map the query results into a list of maps
+      return snapshot.docs.map((doc) {
+        return {
+          'imageUrl': doc['imageUrl'],
+          'fillPercentage': doc['fillPercentage'],
+          'container_type': doc['container_type'],
+          'dimensions': doc['dimensions'],
+          'price': doc['price'],
+          'shippingDate': doc['shippingDate'],
+        };
+      }).toList();
+    } catch (e) {
+      print('Error: $e');
+      return [];
+    }
+  }
+
+
 }

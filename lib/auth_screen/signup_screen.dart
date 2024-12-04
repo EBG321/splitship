@@ -64,11 +64,20 @@ class SignupScreen extends StatelessWidget {
                   Obx(() => authController.isLoading.value
                       ? CircularProgressIndicator()
                       : ElevatedButton(
-                    onPressed: () {
-                      authController.signup(
-                        emailController.text,
-                        passwordController.text,
-                      );
+                    onPressed: () async {
+                        if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
+                          await authController.signup(
+                            emailController.text.trim(),
+                            passwordController.text.trim(),
+                          );
+                          // Navigate to Account Setup Screen only if sign-up is successful
+                          if (authController.isLoading.isFalse) {
+                            Get.to(AccountSetupScreen());
+                          }
+                        } else {
+                          Get.snackbar('Error', 'Please fill in all fields',
+                              snackPosition: SnackPosition.BOTTOM);
+                        }
                       Get.to(AccountSetupScreen());
                     },
                     child: Text('Sign up'),

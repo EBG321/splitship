@@ -1,35 +1,53 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {
-  var isChecked = false.obs;  // Reactive variable for checkbox state
-
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   var isLoading = false.obs;
+  var isChecked = false.obs;
 
-  // Handle login
-  void login(String email, String password) async {
-    isLoading.value = true;
+  // Reactive user
+  var user = Rxn<User>();
+
+  @override
+  void onInit() {
+    super.onInit();
+    // Bind user stream
+    user.bindStream(_auth.authStateChanges());
+  }
+
+  // Signup method
+  Future<void> signup(String email, String password) async {
     try {
-      // Simulate API request (replace with actual login logic)
-      await Future.delayed(Duration(seconds: 2));
-      Get.snackbar('Success', 'Logged in successfully');
+      isLoading.value = true;
+      await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      Get.snackbar('Success', 'Account created successfully', snackPosition: SnackPosition.BOTTOM);
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar('Error', e.message ?? 'Something went wrong', snackPosition: SnackPosition.BOTTOM);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to login');
+      Get.snackbar('Error', 'An unexpected error occurred', snackPosition: SnackPosition.BOTTOM);
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Handle signup
-  void signup(String email, String password) async {
-    isLoading.value = true;
+  // Login method
+  Future<void> login(String email, String password) async {
     try {
-      // Simulate API request (replace with actual signup logic)
-      await Future.delayed(Duration(seconds: 2));
-      Get.snackbar('Success', 'Account created successfully');
+      isLoading.value = true;
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      Get.snackbar('Success', 'Logged in successfully', snackPosition: SnackPosition.BOTTOM);
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar('Error', e.message ?? 'Invalid credentials', snackPosition: SnackPosition.BOTTOM);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to create account');
+      Get.snackbar('Error', 'An unexpected error occurred', snackPosition: SnackPosition.BOTTOM);
     } finally {
       isLoading.value = false;
     }
+  }
+
+  // Logout method
+  Future<void> logout() async {
+    await _auth.signOut();
   }
 }
