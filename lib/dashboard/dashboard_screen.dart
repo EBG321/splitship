@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../add_container/add_container.dart';
+import 'dashboard_controller.dart';
 
 class WalletPage extends StatelessWidget {
+  final WalletPageController walletPageController = Get.put(WalletPageController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,22 +15,22 @@ class WalletPage extends StatelessWidget {
         elevation: 0,
         title: Row(
           children: [
-            CircleAvatar(
-              backgroundImage: AssetImage('assets/profile.jpg'), // Replace with your image
+            Obx(() => CircleAvatar(
+              backgroundImage: NetworkImage(walletPageController.profilePicture.value),
               radius: 20,
-            ),
+            )),
             SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Good Morning 👋',
+                  'Good Afternoon 👋',
                   style: TextStyle(color: Colors.white, fontSize: 14),
                 ),
-                Text(
-                  'Andrew Ainsley',
+                Obx(() => Text(
+                  '${walletPageController.firstName.value} ${walletPageController.lastName.value}', // Show first and last name
                   style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-                ),
+                )),
               ],
             ),
             Spacer(),
@@ -55,10 +60,10 @@ class WalletPage extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Andrew Ainsley',
+                            Obx(() => Text(
+                              '${walletPageController.firstName.value} ${walletPageController.lastName.value}', // Show first and last name
                               style: TextStyle(color: Colors.white, fontSize: 16),
-                            ),
+                            )),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -66,13 +71,13 @@ class WalletPage extends StatelessWidget {
                                   'Your balance',
                                   style: TextStyle(color: Colors.white70),
                                 ),
-                                Image.asset('assets/visa_logo.png', height: 40), // Replace with your logo
+                                Image.asset('assets/visa_logo.png', height: 40),
                               ],
                             ),
-                            Text(
-                              '\$9,729',
+                            Obx(() => Text(
+                              '\$${walletPageController.balance.value}',
                               style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
-                            ),
+                            )),
                             Align(
                               alignment: Alignment.centerRight,
                               child: ElevatedButton(
@@ -89,22 +94,47 @@ class WalletPage extends StatelessWidget {
                   SizedBox(height: 20),
 
                   // Help Center Button
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      // Help Center action
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal,
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Other buttons or widgets
+                      SizedBox(height: 20),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          print("Help Center button pressed");
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        icon: Icon(Icons.help_outline, color: Colors.white),
+                        label: Text(
+                          'Help Center',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
                       ),
-                    ),
-                    icon: Icon(Icons.help_outline, color: Colors.white),
-                    label: Text(
-                      'Help Center',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
+                      SizedBox(height: 20),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Get.to(AddContainerPage());
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        icon: Icon(Icons.add_box_outlined, color: Colors.white),
+                        label: Text(
+                          'Create Container',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                    ],
                   ),
 
                   SizedBox(height: 20),
@@ -139,12 +169,6 @@ class WalletPage extends StatelessWidget {
                           title: 'New Order Made!',
                           subtitle: 'You created a new shipping order 2 hours ago',
                           color: Colors.teal,
-                        ),
-                        _buildTransactionTile(
-                          icon: Icons.account_balance_wallet,
-                          title: 'Top-Up Successful!',
-                          subtitle: 'You added \$600 to your e-wallet 4 hours ago',
-                          color: Colors.blue,
                         ),
                         _buildTransactionTile(
                           icon: Icons.payment,

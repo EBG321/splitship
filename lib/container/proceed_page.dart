@@ -13,53 +13,71 @@ class ProceedPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Proceed with $containerType'),
-        backgroundColor: Color.fromARGB(255, 0, 45, 83),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.teal),
+        title: Text(
+          'Proceed with $containerType',
+          style: const TextStyle(color: Colors.teal),
+        ),
       ),
-      backgroundColor: Color.fromARGB(255, 0, 45, 83),
+      backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Address Input
-            Text(
+            const Text(
               'Enter Delivery Address',
-              style: TextStyle(fontSize: 18, color: Colors.white),
+              style: TextStyle(fontSize: 18, color: Colors.teal),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
+              style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 hintText: 'Street, City, State, ZIP Code',
+                hintStyle: const TextStyle(color: Colors.white70),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: Colors.grey[900]?.withOpacity(0.7),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Colors.teal),
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Payment Method Section
-            Text(
+            const Text(
               'Select Payment Method',
-              style: TextStyle(fontSize: 18, color: Colors.white),
+              style: TextStyle(fontSize: 18, color: Colors.teal),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
             // List of saved cards
             Container(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.grey[900]?.withOpacity(0.7),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Column(
                 children: [
                   Obx(() => ListTile(
-                    leading: Icon(Icons.credit_card, color: Colors.blue),
-                    title: Text('Visa **** 1234'),
-                    subtitle: Text('Expires 12/25'),
+                    leading: const Icon(Icons.credit_card, color: Colors.teal),
+                    title: const Text(
+                      'Visa **** 1234',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    subtitle: const Text(
+                      'Expires 12/25',
+                      style: TextStyle(color: Colors.white70),
+                    ),
                     trailing: Icon(
                       selectedCard.value == 'Visa **** 1234'
                           ? Icons.check_circle
@@ -72,11 +90,17 @@ class ProceedPage extends StatelessWidget {
                       selectedCard.value = 'Visa **** 1234';
                     },
                   )),
-                  Divider(),
+                  const Divider(color: Colors.white24),
                   Obx(() => ListTile(
-                    leading: Icon(Icons.credit_card, color: Colors.blue),
-                    title: Text('MasterCard **** 5678'),
-                    subtitle: Text('Expires 10/24'),
+                    leading: const Icon(Icons.credit_card, color: Colors.teal),
+                    title: const Text(
+                      'MasterCard **** 5678',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    subtitle: const Text(
+                      'Expires 10/24',
+                      style: TextStyle(color: Colors.white70),
+                    ),
                     trailing: Icon(
                       selectedCard.value == 'MasterCard **** 5678'
                           ? Icons.check_circle
@@ -92,22 +116,31 @@ class ProceedPage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Proceed Button
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  Get.snackbar('Success', 'Payment confirmed for $containerType');
+                  Get.snackbar(
+                    'Success',
+                    'Payment confirmed for $containerType',
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: Colors.teal,
+                    colorText: Colors.white,
+                  );
                   Get.to(WalletPage());
                 },
-                child: Text('Confirm and Proceed'),
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                  backgroundColor: Colors.blue.shade300,
+                  backgroundColor: Colors.teal,
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
+                ),
+                child: const Text(
+                  'Confirm and Proceed',
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
             ),

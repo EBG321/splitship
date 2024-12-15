@@ -22,10 +22,10 @@ class _AddContainerPageState extends State<AddContainerPage> {
   // Map of container types to image URLs
   final Map<String, String> containerImages = {
     "dry container": "https://www.shutterstock.com/image-illustration/3d-rendering-open-empty-red-600nw-1696470574.jpg",
-    "Flat rack container": "https://www.shutterstock.com/image-illustration/3d-rendering-open-flat-rack-container-600nw-1696470574.jpg",
-    "Open top container": "https://www.shutterstock.com/image-illustration/3d-rendering-open-top-container-600nw-1696470574.jpg",
-    "Double door container": "https://www.shutterstock.com/image-illustration/3d-rendering-double-door-container-600nw-1696470574.jpg",
-    "ISO Reefer container": "https://www.shutterstock.com/image-illustration/3d-rendering-iso-reefer-container-600nw-1696470574.jpg",
+    "Flat rack container": "https://s.alicdn.com/@sc04/kf/HTB1628mX5zxK1Rjy1zk761HrVXae.png_720x720q50.png",
+    "Open top container": "https://www.boxman.co.nz/wp-content/uploads/2022/06/f_158_01_Boxman_20ft_open_top_container.jpg",
+    "Double door container": "https://www.cascadecontainer.com/cdn/shop/files/40_STD_Double_Door_jpg.webp?v=1702774703",
+    "ISO Reefer container": "https://s.alicdn.com/@sc04/kf/H51898bfdd42941a6b48afa4fedea05e1m.jpg_720x720q50.jpg",
   };
 
   // List of countries for location selection
@@ -62,29 +62,45 @@ class _AddContainerPageState extends State<AddContainerPage> {
   Future<void> _addContainer() async {
     if (_formKey.currentState!.validate()) {
       try {
-        // Collect the data from the form
+        // Set the image URL based on the selected container type
+        final imageUrl = containerImages[selectedContainerType] ?? "";
+
+        // Collect the container data from the form
         final containerData = {
           'container_type': selectedContainerType,
           'dimensions': _dimensionsController.text,
           'price': double.parse(_priceController.text),
           'location': selectedLocation,
-          'fillPercentage': double.parse(_fillPercentageController.text) / 100, // Dividing by 100
+          'fillPercentage': double.parse(_fillPercentageController.text) / 100,
           'shippingDate': _shippingDateController.text,
-          'imageUrl': imageUrl,
+          'imageUrl': imageUrl, // Use the dynamically set image URL
         };
 
-        // Add the container data to Firebase
-        await FirebaseFirestore.instance.collection('containers').add(containerData);
+        // Add the container data to the containers collection and get the document ID
+        final containerDocRef = await FirebaseFirestore.instance
+            .collection('containers')
+            .add(containerData);
 
-        // Show success message
+        final containerID = containerDocRef.id;
+
+        // Add the container ID to the user's document
+        final userID = "BJW4FFPNTIT5hDy4c7g9HWxx5om2"; // Replace with dynamic user ID
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userID)
+            .update({
+          'container': {'id': containerID},
+        });
+
         Get.snackbar('Success', 'Container added successfully!');
-        // Optionally, navigate back or reset the form
         Navigator.pop(context);
       } catch (e) {
         Get.snackbar('Error', 'Failed to add container: $e');
       }
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
